@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div>
+        <h1>{{ profile.user }}的详情页:</h1>
+        <ul>
+            <li>
+                {% if  profile.date_of_birth %}
+                    {{ profile.date_of_birth|date:"Y-m-d" }}
+                {% endif %}
+            </li>
+            <li>
+                {% if profile.user.email %}
+                    {{ profile.user.email }}
+                {% endif %}
+            </li>
+            <li>
+                {% if profile.photo %}
+                    <img width="300px" src="{{ profile.photo.url }}" alt="">
+                {% endif %}
+            </li>
+            <li>
+                {% if request.user.profile in profile.followers.all %}
+                    <a class="like" data-to_id="{{ profile.id }}" data-from_id="{{ request.user.profile.id }}"
+                       data-action="unlike" href="#">取消关注</a>
+                {% else %}
+                    <a class="like" data-to_id="{{ profile.id }}" data-from_id="{{ request.user.profile.id }}"
+                       data-action="like" href="#">关注</a>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+    <div>
+        <h1>{{ profile.user }}的关注:</h1>
+        <ul>
+            {% for p in profile.following.all %}
+                <li>{{ p.name }}</li>
+            {% empty %}
+                没有关注任何人
+            {% endfor %}
+        </ul>
+        <h1>{{ profile.user }}的粉丝:</h1>
+        <ul>
+            {% for p in profile.followers.all %}
+                <li>{{ p.user }}</li>
+            {% empty %}
+                没有粉丝
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block script %}
+
+
+    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>
+        var csrftoken = Cookies.get('csrftoken');
+
+        function csrfSafeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $(document).ready(function () {
+            $('a.like').click(function (e) {
+                e.preventDefault();
+                $.post(
+                    "{% url 'star' %}",
+                    {
+                        "action": $(this).data('action'),
+                        "from_id": $(this).data('from_id'),
+                        "to_id": $(this).data('to_id'),
+                    },
+                    function (d) {
+                        let previus_action = $('a.like').data('action');
+                        if (d['status'] === 'ok') {
+                            {#window.location.reload();#}
+                            $('a.like').text(previus_action === "like" ? '取消关注' : '关注')
+                                .data('action', previus_action === 'like' ? 'unlike' : 'like');
+                        }
+                    })
+            })
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block contain %}
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><input type="submit" value="登录">
+<a href="{% url 'password_reset' %}">忘记密码？</a>
+        </p>
+    </form>
+{% endblock %}

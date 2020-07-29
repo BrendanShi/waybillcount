@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!-- 该页面为通用基础页面，是其他页面继承的模板 -->
+{% load static %}
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="360-site-verification" content="fad9110a86a76e771a94ac1825d673a4"/>
+    <title>{{ companyinfo.name }}</title>
+    <meta name="applicable-device" content="pc,mobile">
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <!--[if lt IE 9]>
+	  <script src="{% static 'js/html5shiv.min.js' %}"></script>
+	  <script src="{% static 'js/respond.min.js' %}"></script>
+	<![endif]-->
+    <!-- 预留js及css模块 -->
+    {% block header %} {% endblock %}
+</head>
+<body>
+
+<header>
+    <!-- 最顶部的一行内容 -->
+    <div class="top_menu">
+        <div class="container">
+            <span class="top_name">欢迎光临~{{ companyinfo.name }}</span>
+            <div class="language"><span class="glyphicon glyphicon-earphone"
+                                        aria-hidden="true"></span>&nbsp;&nbsp;咨询电话：{{ companyinfo.phone }}
+            </div>
+        </div>
+    </div>
+    <!-- 公司logo、搜索展示 -->
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <a href="{% url 'dashboard' %}">订单统计系统</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- 主体内容模块 -->
+{% block contain %}
+{% endblock %}
+
+<!--手机界面底部导航-->
+<nav class="navbar navbar-default navbar-fixed-bottom footer_nav">
+    <div class="foot_nav btn-group dropup">
+        <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+           href="javascript:void(0);" id="share_id">
+            <span class="glyphicon glyphicon-share btn-lg" aria-hidden="true"></span>
+            分享</a>
+    </div>
+    <div class="foot_nav"><a href="tel:{{ companyinfo.telephone }}"><span class="glyphicon glyphicon-phone btn-lg"
+                                                                          aria-hidden="true"></span>手机</a></div>
+    <div class="foot_nav"><a id="gotocate" href="javascript:void(0);"><span class="glyphicon glyphicon-th-list btn-lg"
+                                                                     aria-hidden="true"></span>分类</a></div>
+    <div class="foot_nav"><a id="gototop" href="javascript:void(0);"><span class="glyphicon glyphicon-circle-arrow-up btn-lg"
+                                                                    aria-hidden="true"></span>顶部</a></div>
+</nav>
+
+<!-- 底部信息展示 -->
+<footer>
+    <div class="copyright">
+        <p>CopyRight 2020 All Right Reserved {{ companyinfo.name }}&nbsp;<a href="http://www.beian.gov.cn/"
+                                                                            target="_blank">冀ICP备20013145号-1</a>
+        </p>
+        <p class="copyright_p">地址：{{ companyinfo.address }} &nbsp;电话：{{ companyinfo.phone }}
+            &nbsp;传真：{{ companyinfo.fax }}&nbsp;</p>
+    </div>
+
+</footer>
+
+</body>
+</html>
+<script type="text/javascript">
+    var winHeight = 200;
+    var timer = null;
+
+    function show() {
+        document.getElementById("popWin").style.display = "block";
+        timer = setInterval("lift(5)", 2);
+    }
+
+    function hid() {
+        timer = setInterval("lift(-5)", 2);
+    }
+
+    function lift(n) {
+        var w = document.getElementById("popWin");
+        var h = parseInt(w.style.height || w.currentStyle.height);
+        if (h < winHeight && n > 0 || h > 1 && n < 0) {
+            w.style.height = (h + n).toString() + "px";
+        } else {
+            w.style.display = (n > 0 ? "block" : "none");
+            clearInterval(timer);
+        }
+    }
+
+    window.onload = function () {
+        setTimeout("show()", 1000);
+    };
+
+    function search_fun() {
+        var keyword = $("#search-keyword").val();
+        if (keyword) {
+            $(location).attr('href', "/product/?keyword=" + keyword);  // 页面跳转
+        } else {
+            return false
+        }
+    }
+</script>
+

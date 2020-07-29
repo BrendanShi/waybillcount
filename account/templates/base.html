@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+<div id="container">
+    <div id="header">头</div>
+    <div id="content">
+        {% block content %}中
+        {% endblock %}
+    </div>
+    <div id="footer">尾</div>
+</div>
+</body>
+</html>
+
+<style>
+</style>
+
+{% block script %}
+
+{% endblock %}
